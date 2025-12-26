@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface HeatmapRepository extends JpaRepository<Heatmap, Long> {
 
 
-    public List<Heatmap> findTop20ByOrderByLastAccessedAtDesc();
+    List<Heatmap> findTop20ByOrderByLastAccessedAtDesc();
 
-    public Optional<Heatmap> findByVidId(String vidId);
+    Optional<Heatmap> findByVidId(String vidId);
 }

@@ -34,4 +34,9 @@ public class Heatmap {
         this.title = title;
         this.heatmap = heatmap;
     }
+
+    public void updateLastAccessedAt() {
+        this.lastAccessedAt = LocalDateTime.now();
+    }
+
 }

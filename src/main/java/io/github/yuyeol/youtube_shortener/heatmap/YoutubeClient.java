@@ -40,8 +40,14 @@ public class YoutubeClient {
         URI uri = URI.create(urlText);
         String urlHost = uri.getHost();
 
+        if (urlHost == null)
+            return null;
+
         if (urlHost.equals("www.youtube.com") || urlHost.equals("youtube.com")) {
             String paramsRaw = uri.getQuery();
+            if (paramsRaw == null)
+                return null;
+
             String[] paramKeyValues =  paramsRaw.split("&");
             Map<String, String> params = new HashMap<>();
             for (String paramKeyValue : paramKeyValues) {

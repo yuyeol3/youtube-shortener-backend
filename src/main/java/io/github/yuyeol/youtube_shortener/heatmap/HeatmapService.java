@@ -28,6 +28,7 @@ public class HeatmapService {
 
         if (cached.isPresent()) {
             Heatmap heatmap = cached.get();
+            heatmap.updateLastAccessedAt();
             return HeatmapDto.from(heatmap);
         }
 
