@@ -1,0 +1,21 @@
+2025-12-27 15:25:06 INFO  i.g.y.y.YoutubeShortenerApplication - Starting YoutubeShortenerApplication using Java 21.0.7 with PID 44424 (C:\Users\zerom\Desktop\files\my_project_files\youtube_shortener_v2\youtube_shortener_backend\build\classes\java\main started by zerom in C:\Users\zerom\Desktop\files\my_project_files\youtube_shortener_v2\youtube_shortener_backend)
+2025-12-27 15:25:06 INFO  i.g.y.y.YoutubeShortenerApplication - No active profile set, falling back to 1 default profile: "default"
+2025-12-27 15:25:20 INFO  i.g.y.y.YoutubeShortenerApplication - Started YoutubeShortenerApplication in 14.197 seconds (process running for 14.938)
+2025-12-27 15:25:37 INFO  i.g.y.y.YoutubeShortenerApplication - Starting YoutubeShortenerApplication using Java 21.0.7 with PID 24860 (C:\Users\zerom\Desktop\files\my_project_files\youtube_shortener_v2\youtube_shortener_backend\build\classes\java\main started by zerom in C:\Users\zerom\Desktop\files\my_project_files\youtube_shortener_v2\youtube_shortener_backend)
+2025-12-27 15:25:37 INFO  i.g.y.y.YoutubeShortenerApplication - No active profile set, falling back to 1 default profile: "default"
+2025-12-27 15:25:48 INFO  i.g.y.y.YoutubeShortenerApplication - Started YoutubeShortenerApplication in 11.407 seconds (process running for 11.918)
+2025-12-27 15:26:05 INFO  i.g.y.y.LoggingAspect - Request: [GET /api/heatmap/recents] - executed in 634ms
+2025-12-27 15:26:05 INFO  i.g.y.y.LoggingAspect - Request: [GET /api/heatmap/recents] - executed in 5ms
+2025-12-27 15:28:59 INFO  i.g.y.y.LoggingAspect - Request: [GET /api/heatmap] - executed in 1918ms
+2025-12-27 15:28:59 INFO  i.g.y.y.LoggingAspect - Request: [GET /api/heatmap] - executed in 14ms
+2025-12-27 15:28:59 INFO  i.g.y.y.LoggingAspect - Request: [GET /api/heatmap] - executed in 7ms
+2025-12-27 15:30:00 INFO  i.g.y.y.LoggingAspect - Request: [GET /api/heatmap/recents] - executed in 11ms
+2025-12-27 15:30:00 INFO  i.g.y.y.LoggingAspect - Request: [GET /api/heatmap/recents] - executed in 8ms
+2025-12-27 15:30:01 INFO  i.g.y.y.LoggingAspect - Request: [GET /api/heatmap] - executed in 8ms
+2025-12-27 15:30:01 INFO  i.g.y.y.LoggingAspect - Request: [GET /api/heatmap] - executed in 6ms
+2025-12-27 15:30:03 INFO  i.g.y.y.LoggingAspect - Request: [GET /api/heatmap/recents] - executed in 8ms
+2025-12-27 15:30:03 INFO  i.g.y.y.LoggingAspect - Request: [GET /api/heatmap/recents] - executed in 6ms
+2025-12-27 15:31:23 INFO  i.g.y.y.LoggingAspect - Request: [GET /api/heatmap] - executed in 12ms
+2025-12-27 15:31:23 INFO  i.g.y.y.LoggingAspect - Request: [GET /api/heatmap] - executed in 7ms
+2025-12-27 15:31:35 INFO  i.g.y.y.LoggingAspect - Request: [GET /api/heatmap/recents] - executed in 8ms
+2025-12-27 15:31:35 INFO  i.g.y.y.LoggingAspect - Request: [GET /api/heatmap/recents] - executed in 7ms

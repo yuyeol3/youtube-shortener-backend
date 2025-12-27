@@ -8,10 +8,11 @@ create table heatmap(
     title varchar(255) not null,
     vid_id varchar(255) not null unique ,
     heatmap text not null,
+    created_at datetime not null default now(),
     last_accessed_at datetime not null default now()
-
 );
 
-create index  idx_vid_id on heatmap (vid_id);
-create index  idx_last_accessed_at on heatmap (vid_id desc);
+create index idx_vid_id on heatmap (vid_id);
+create index idx_created_at on heatmap (created_at desc);
+create index idx_last_accessed_at on heatmap (vid_id desc);
 

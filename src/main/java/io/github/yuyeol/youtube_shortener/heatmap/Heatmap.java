@@ -24,6 +24,9 @@ public class Heatmap {
     @Column(name="heatmap", nullable = false)
     private String heatmap;
 
+    @Column(name="created_at", nullable = false)
+    private final LocalDateTime createdAt = LocalDateTime.now();
+
     @Column(name="last_accessed_at", nullable = false)
     private LocalDateTime lastAccessedAt = LocalDateTime.now();
 

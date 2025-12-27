@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/heatmap")
+@RequestMapping("/api/heatmap")
 public class HeatmapController {
 
     private final HeatmapService heatmapService;

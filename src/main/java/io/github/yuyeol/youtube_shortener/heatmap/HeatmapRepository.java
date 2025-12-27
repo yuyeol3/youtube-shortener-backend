@@ -11,6 +11,7 @@ import java.util.Optional;
 @Repository
 public interface HeatmapRepository extends JpaRepository<Heatmap, Long> {
 
+    void deleteByCreatedAtBefore(LocalDateTime createdAt);
 
     List<Heatmap> findTop20ByOrderByLastAccessedAtDesc();
 

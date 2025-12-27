@@ -4,6 +4,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
@@ -15,6 +17,7 @@ import java.util.regex.Pattern;
 
 @Component
 public class HeatmapParser {
+    private final Logger logger = LoggerFactory.getLogger(HeatmapParser.class);
     private static final Pattern YT_INITIAL_DATA_PATTERN =
             Pattern.compile("ytInitialData\\s*=\\s*(\\{.*?\\});", Pattern.DOTALL);
 
@@ -27,46 +30,67 @@ public class HeatmapParser {
     public Optional<Heatmap> parseToHeatmap(YoutubeResponseDto response) {
         try {
             Document dom = Jsoup.parse(response.body());
-            JsonNode json = parseYoutubeInitialData(dom);
+            Optional<JsonNode> json = parseYoutubeInitialData(dom);
 
-            if (json == null) return Optional.empty();
-            String markersList = parseMarkersList(json).toString();
-            String title = parseTitle(json);
+            if (json.isEmpty())
+                return Optional.empty();
 
-            return Optional.of(new Heatmap(response.vidId(), title, markersList));
+
+            Optional<JsonNode> markersList = markersList = parseMarkersList(json.get());
+            Optional<String> title = parseTitle(json.get());
+
+            if (markersList.isEmpty() ||  title.isEmpty())
+                return Optional.empty();
+
+
+            return Optional.of(new Heatmap(response.vidId(), title.get(), markersList.get().toString()));
         }
         catch (NullPointerException e) {
+            e.printStackTrace();
             return Optional.empty();
         }
 
     }
 
-    private String parseTitle(JsonNode json) {
-        return json
-                .get("contents")
-                .get("twoColumnWatchNextResults")
-                .get("results")
-                .get("results")
-                .get("contents").get(0)
-                .get("videoPrimaryInfoRenderer")
-                .get("title")
-                .get("runs").get(0)
-                .get("text").asString();
+    private Optional<String> parseTitle(JsonNode json) {
+        JsonNode videoPrimaryInfoRenderer = json.findValue("videoPrimaryInfoRenderer");
+
+        if (videoPrimaryInfoRenderer == null || videoPrimaryInfoRenderer.isMissingNode()) {
+            return Optional.empty();
+        }
+
+        // 2. 찾은 노드 안에서 markersList를 꺼냅니다.
+        JsonNode titleNode = videoPrimaryInfoRenderer
+                .path("title")
+                .path("runs")
+                .path(0)
+                .path("text");
+
+        if (titleNode.isMissingNode()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(titleNode.asString());
     }
 
-    private JsonNode parseMarkersList(JsonNode json) {
-            return json
-                    .get("frameworkUpdates")
-                    .get("entityBatchUpdate")
-                    .get("mutations")
-                    .get(0)
-                    .get("payload")
-                    .get("macroMarkersListEntity")
-                    .get("markersList");
+    private Optional<JsonNode> parseMarkersList(JsonNode json) {
+        JsonNode macroMarkersEntity = json.findValue("macroMarkersListEntity");
 
+        if (macroMarkersEntity == null || macroMarkersEntity.isMissingNode()) {
+            return Optional.empty();
+        }
+
+        // 2. 찾은 노드 안에서 markersList를 꺼냅니다.
+        JsonNode markersList = macroMarkersEntity.path("markersList");
+
+        if (markersList.isMissingNode()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(markersList);
     }
 
-    private JsonNode parseYoutubeInitialData(Document dom) {
+    private Optional<JsonNode> parseYoutubeInitialData(Document dom) {
         Elements scripts = dom.select("script");
 
         for (int i = scripts.size() - 1; i >= 0; i--) {
@@ -79,13 +103,13 @@ public class HeatmapParser {
 
             String jsonText = m.group(1); // "{ ... }"
             try {
-                return objectMapper.readTree(jsonText);
+                return Optional.of(objectMapper.readTree(jsonText));
             } catch (Exception ignored) {
                 // 파싱 실패하면 다음 script로
             }
         }
 
-        return null;
+        return Optional.empty();
     }
 
 }
