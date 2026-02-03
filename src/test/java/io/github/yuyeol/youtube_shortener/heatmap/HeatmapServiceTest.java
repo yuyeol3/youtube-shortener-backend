@@ -33,6 +33,9 @@ class HeatmapServiceTest {
     @Mock
     private HeatmapRepository heatmapRepository;
 
+    @Mock
+    private HeatmapHistoryService heatmapHistoryService;
+
     @InjectMocks
     private HeatmapService heatmapService;
 
@@ -107,7 +110,7 @@ class HeatmapServiceTest {
 
         HeatmapDto dto = heatmapService.getHeatMapByUrl("https://www.youtube.com/watch?v=abc123");
 
-        verify(heatmap).updateLastAccessedAt();
+        verify(heatmapHistoryService).updateLastAccessedAt("abc123");
         verify(youtubeClient, never()).fetchHtml(any());
         verify(heatmapParser, never()).parseToHeatmap(any());
         verify(heatmapRepository, never()).save(any());
@@ -129,7 +132,7 @@ class HeatmapServiceTest {
         HeatmapDto dto = heatmapService.getHeatMapByUrl("https://youtu.be/abc123");
 
         verify(heatmapRepository).findByVidId("abc123");
-        verify(heatmapRepository).save(parsed);
+        verify(heatmapRepository).saveAndFlush(parsed);
         assertEquals("abc123", dto.vidId());
         assertEquals("title", dto.title());
     }

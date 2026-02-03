@@ -7,7 +7,9 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
 
     InvalidYoutubeURL("주소가 올바르지 않습니다.", HttpStatus.NOT_FOUND),
-    CouldNotParseHeatMap("시청 데이터를 파싱할 수 없습니다.", HttpStatus.NOT_FOUND);
+    CouldNotParseHeatMap("시청 데이터를 파싱할 수 없습니다.", HttpStatus.NOT_FOUND),
+    CouldNotFetchHeatMapData("시청 데이터를 가져올 수 없습니다.", HttpStatus.NOT_FOUND),
+    ;
 
     private final String message;
     private final HttpStatus status;

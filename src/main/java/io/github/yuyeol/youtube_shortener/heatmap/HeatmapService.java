@@ -3,7 +3,9 @@ package io.github.yuyeol.youtube_shortener.heatmap;
 import io.github.yuyeol.youtube_shortener.exception_handling.BusinessException;
 import io.github.yuyeol.youtube_shortener.exception_handling.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URI;
 import java.util.HashMap;
@@ -18,14 +20,21 @@ public class HeatmapService {
     private final HeatmapParser heatmapParser;
     private final YoutubeClient youtubeClient;
     private final HeatmapRepository heatmapRepository;
-    public HeatmapService(HeatmapParser heatmapParser, YoutubeClient youtubeClient, HeatmapRepository heatmapRepository) {
+    private final HeatmapHistoryService heatmapHistoryService;
+
+    public HeatmapService(HeatmapParser heatmapParser,
+                          YoutubeClient youtubeClient,
+                          HeatmapRepository heatmapRepository,
+                          HeatmapHistoryService heatmapHistoryService
+    ) {
         this.heatmapParser = heatmapParser;
         this.youtubeClient = youtubeClient;
         this.heatmapRepository = heatmapRepository;
+        this.heatmapHistoryService = heatmapHistoryService;
     }
-
+    @Transactional
     public HeatmapDto getHeatMapByUrl(String url) {
-        if (url == null || url.isEmpty()) {
+        if (url == null || url.isBlank()) {
             throw new BusinessException(ErrorCode.InvalidYoutubeURL);
         }
 
@@ -34,17 +43,40 @@ public class HeatmapService {
 
         Optional<Heatmap> cached = heatmapRepository.findByVidId(vidId);
 
+        // cache hit
         if (cached.isPresent()) {
             Heatmap heatmap = cached.get();
-            heatmap.updateLastAccessedAt();
+            heatmapHistoryService.updateLastAccessedAt(vidId);
+            return HeatmapDto.from(heatmap);
+        }
+        // cache miss
+        return fetchAndSaveHeatmap(vidId);
+    }
+
+    public HeatmapDto fetchAndSaveHeatmap(String vidId) {
+        YoutubeResponseDto response;
+        try {
+            response = youtubeClient.fetchHtml(vidId);
+        }
+        catch (Exception e) {
+            throw new BusinessException(ErrorCode.CouldNotFetchHeatMapData);
+        }
+
+        try {
+            Heatmap heatmap = heatmapParser.parseToHeatmap(response)
+                    .orElseThrow(()->new BusinessException(ErrorCode.CouldNotParseHeatMap));
+            heatmapRepository.saveAndFlush(heatmap);
+            return HeatmapDto.from(heatmap);
+        }
+        catch (DataIntegrityViolationException e) {
+            Heatmap heatmap = heatmapRepository.findByVidId(vidId)
+                    .orElseThrow(() -> new BusinessException(ErrorCode.InvalidYoutubeURL));
+            heatmapHistoryService.updateLastAccessedAt(vidId);
             return HeatmapDto.from(heatmap);
         }
 
-        YoutubeResponseDto response = youtubeClient.fetchHtml(vidId);
-        Heatmap heatmap = heatmapParser.parseToHeatmap(response).orElseThrow(()->new BusinessException(ErrorCode.CouldNotParseHeatMap));
-        heatmapRepository.save(heatmap);
-        return HeatmapDto.from(heatmap);
     }
+
 
     public List<HeatmapDto> getRecentlyAccessedHeatmaps() {
         List<Heatmap> heatmaps = heatmapRepository.findTop20ByOrderByLastAccessedAtDesc();
