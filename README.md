@@ -16,7 +16,7 @@
 3. 서버에서 받은 정보를 통해 프론트에서 인기 구간 자동 재생
 
 ## 사용한 라이브러리
-- express
+- Spring Boot
 
 ## 데모
 <img width="958" height="1563" alt="youtube-shortener duckdns org_watch-video_tPVGo_T_r68" src="https://github.com/user-attachments/assets/165cd2d2-e85d-49c1-a36b-018254af39c7" />
